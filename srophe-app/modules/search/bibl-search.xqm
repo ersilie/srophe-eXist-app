@@ -16,6 +16,7 @@ declare variable $bibls:title {request:get-parameter('title', '')};
 declare variable $bibls:author {request:get-parameter('author', '')};
 declare variable $bibls:idno {request:get-parameter('idno', '')};
 declare variable $bibls:subject {request:get-parameter('subject', '')};
+declare variable $bibls:provenance {request:get-parameter('provenance', '')};
 declare variable $bibls:id-type {request:get-parameter('id-type', '')};
 declare variable $bibls:pub-place {request:get-parameter('pub-place', '')};
 declare variable $bibls:publisher {request:get-parameter('publisher', '')};
@@ -104,6 +105,16 @@ declare function bibls:subject() as xs:string?{
     else ()  
 };
 
+declare function bibls:provenance() as xs:string?{
+    if(request:get-parameter('provenance', '') != '' or request:get-parameter('provenance-exact', '')) then 
+        if(request:get-parameter('provenance', '')) then 
+            concat("[descendant::tei:relation[@ref='dc:subject' and type='provenance']/descendant::tei:desc[ft:query(.,'",data:clean-string(request:get-parameter('provenance', '')),"',data:search-options())]]")     
+        else if(request:get-parameter('provenance-exact', '')) then 
+            concat("[descendant::tei:relation[@ref='dc:subject' and type='provenance']/descendant::tei:desc[. = '",request:get-parameter('provenance-exact', ''),"']]")
+        else()
+    else ()  
+};
+
 declare function bibls:mss() as xs:string?{
     if(request:get-parameter('mss', '') != '') then
         concat("[descendant::tei:relation[@ref='dcterms:references']/descendant::tei:desc[ft:query(.,'",data:clean-string(request:get-parameter('mss', '')),"',data:search-options())]]")
@@ -123,6 +134,7 @@ declare function bibls:query-string() as xs:string? {
     bibls:date(),
     bibls:date-range(),
     bibls:subject(),
+    bibls:provenance(),
     bibls:mss(),
     bibls:online(),
     bibls:idno()
@@ -143,17 +155,26 @@ declare function bibls:search-string(){
                 else if ($parameter = 'author') then 
                     (<span class="param">Author/Editor: </span>,<span class="match">{$bibls:author}&#160; </span>)
                 else if ($parameter = 'subject-exact') then 
-                    (<span class="param">Subject: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
+                    (<span class="param">Subject: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>) 
+                else if ($parameter = 'provenance-exact') then 
+                    (<span class="param">Provenance: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>) 
                 else (<span class="param">{replace(concat(upper-case(substring($parameter,1,1)),substring($parameter,2)),'-',' ')}: </span>,<span class="match">{request:get-parameter($parameter, '')}&#160; </span>)    
             else ()               
 };
 
-(: BA specific function to list all available subjects for dropdown list in search form :)
+(: BA specific functions to list all available subjects for dropdown list in search form :)
 declare function bibls:get-subjects(){
  for $s in collection($global:data-root)//tei:relation[@ref='dc:subject']/descendant::tei:desc
  group by $subject-facet := $s/text()
  order by global:build-sort-string($subject-facet,'')
  return <option value="{$subject-facet}">{$subject-facet}</option>
+};
+
+declare function bibls:get-provenances(){
+ for $p in collection($global:data-root)//tei:relation[@ref='dc:subject' and @type='provenance']/descendant::tei:desc
+ group by $provenance-facet := $p/text()
+ order by global:build-sort-string($provenance-facet,'')
+ return <option value="{$provenance-facet}">{$provenance-facet}</option>
 };
 
 (:~
@@ -228,11 +249,21 @@ declare function bibls:search-form() {
             </div>
             -->
             <div class="form-group">            
-                <label for="subject-exact" class="col-sm-2 col-md-3  control-label">Select Subject: </label>
+                <label for="subject-exact" class="col-sm-2 col-md-3  control-label">Subject: </label>
                 <div class="col-sm-10 col-md-6 ">
                     <div class="input-group">
                     <select name="subject-exact">
                         {bibls:get-subjects()}
+                    </select>
+                    </div>                 
+                </div>
+            </div>
+            <div class="form-group">            
+                <label for="provenance-exact" class="col-sm-2 col-md-3  control-label">Community of Origin: </label>
+                <div class="col-sm-10 col-md-6 ">
+                    <div class="input-group">
+                    <select name="provenance-exact">
+                        {bibls:get-provenances()}
                     </select>
                     </div>                 
                 </div>
