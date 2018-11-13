@@ -72,7 +72,7 @@ return
         then 
             if(exists(request:get-parameter('comments','')) and request:get-parameter('comments','') != '') 
               then
-               if(local:recaptcha() = true()) then 
+               if((:local:recaptcha() = true():)contains(local:recaptcha(),'true')) then 
                  if (mail:send-email(local:build-message(),$recaptcha-config//*:email-server/text(), ()) ) then
                    <h4>Thank you. Your message has been sent.</h4>
                  else
