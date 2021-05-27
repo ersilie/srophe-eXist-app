@@ -179,7 +179,7 @@
     <xsl:template match="t:bibl">
         <xsl:choose>
             <xsl:when test="@subtype='coins'">
-                <span class="Z3988" title="{string(t:ptr/@target)}"></span>
+                <span class="Z3988" title="{string(t:ptr/@target)}"/>
             </xsl:when>
             <xsl:when test="@type !=('lawd:ConceptualWork','lawd:Citation')">
                 <li>
@@ -355,7 +355,56 @@
                         </p>
                     </xsl:if>
                 </div>
-                
+                <xsl:if test="descendant::t:ref[@type='IIIF']">
+                    <xsl:variable name="manifest" select="concat(descendant::t:ref[@type='IIIF'][1]/@target,'/manifest.json')"/>
+                    <div>
+                        <script src="https://unpkg.com/mirador@latest/dist/mirador.min.js"/>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mirador" style="margin:1em; padding:1em; z-index: 1; min-height:600px; poisition: relative;">
+                                    <div id="mirador"/>
+                                </div>
+                            </div>
+                        </div>
+                        <script type="text/javascript"> 
+                            <![CDATA[
+                                var mirador = Mirador.viewer({
+                                "id": "mirador",
+                                "manifests": {"]]><xsl:value-of select="$manifest"/><![CDATA[": {
+                                "provider": ""
+                                }
+                                },
+                                "windows": [
+                                  {
+                                  "loadedManifest": "]]><xsl:value-of select="$manifest"/><![CDATA[",
+                                  "thumbnailNavigationPosition": 'far-right'
+                                  }
+                                ],
+                                "window": {
+                                  "allowFullscreen": "true",
+                                  "views": [ 
+                                    { "key": 'single' },
+                                    { "key": 'book' },
+                                    { "key": 'gallery' },
+                                  ]
+                                },
+                               "workspace": {
+                                  "type": 'mosaic',
+                                },
+                                "workspaceControlPanel": {
+                                  "enabled": "false"
+                                },
+                                "theme" :{
+                                  "palette": {
+                                    "primary": {
+                                      "main": '#009440'
+                                    }
+                                  }
+                                }
+                                });]]>
+                        </script>
+                    </div>
+                </xsl:if>
                 <xsl:if test="descendant::t:idno[@type='URI'][not(matches(.,'^(https://doi.org/|https://biblia-arabica.com|https://www.zotero.org|https://api.zotero.org)'))] or descendant::t:ref/@target[not(matches(.,'^(https://biblia-arabica.com|https://www.zotero.org|https://api.zotero.org)'))]">
                     <h3>View at: </h3>
                     <div class="section indent">    
