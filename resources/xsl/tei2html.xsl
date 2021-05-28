@@ -355,8 +355,18 @@
                         </p>
                     </xsl:if>
                 </div>
-                <xsl:if test="descendant::t:ref[@type='IIIF']">
-                    <xsl:variable name="manifest" select="concat(descendant::t:ref[@type='IIIF'][1]/@target,'/manifest.json')"/>
+                <xsl:if test="descendant::t:ref[@type='IIIF'] or descendant::t:ref[contains(@target, '//archive.org/details')]">
+                    <!-- //archive.org/details/( -->
+                    <xsl:variable name="manifest">
+                        <xsl:choose>
+                            <xsl:when test="descendant::t:ref[@type='IIIF']">
+                                <xsl:value-of select="concat(replace(descendant::t:ref[@type='IIIF'][1]/@target,'//archive.org/details/','//iiif.archivelab.org/iiif/'),'/manifest.json')"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="concat(replace(descendant::t:ref[contains(@target, '//archive.org/details')][1]/@target,'//archive.org/details/','//iiif.archivelab.org/iiif/'),'/manifest.json')"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:variable>
                     <div>
                         <script src="https://unpkg.com/mirador@latest/dist/mirador.min.js"/>
                         <div class="row">
