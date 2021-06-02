@@ -357,14 +357,34 @@
                 </div>
                 <xsl:if test="descendant::t:ref[@type='IIIF'] or descendant::t:ref[contains(@target, '//archive.org/details')]">
                     <!-- //archive.org/details/( -->
-                    <xsl:variable name="manifest">
+                    <xsl:variable name="manifestString">
                         <xsl:choose>
                             <xsl:when test="descendant::t:ref[@type='IIIF']">
-                                <xsl:value-of select="concat(replace(descendant::t:ref[@type='IIIF'][1]/@target,'//archive.org/details/','//iiif.archivelab.org/iiif/'),'/manifest.json')"/>
+                                <xsl:value-of select="descendant::t:ref[@type='IIIF'][1]/@target"/>
                             </xsl:when>
                             <xsl:otherwise>
-                                <xsl:value-of select="concat(replace(descendant::t:ref[contains(@target, '//archive.org/details')][1]/@target,'//archive.org/details/','//iiif.archivelab.org/iiif/'),'/manifest.json')"/>
+                                <xsl:value-of select="descendant::t:ref[contains(@target, '//archive.org/details')][1]/@target"/>
                             </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:variable>
+                    <xsl:variable name="manifest">
+                        <xsl:choose>
+                            <xsl:when test="matches($manifestString, 'https?://archive.org/details/(.*)')">
+                                <xsl:value-of select="replace($manifestString,'https?://archive.org/details/(.*)','https://iiif.archivelab.org/iiif/$1/manifest.json')"/>
+                            </xsl:when>
+                            <xsl:when test="matches($manifestString, 'https?://reader.digitale-sammlungen.de/resolve/display/(.*?).html')">
+                                <xsl:value-of select="replace($manifestString,'https?://reader.digitale-sammlungen.de/resolve/display/(.*?).html','https://api.digitale-sammlungen.de/iiif/presentation/v2/$1/manifest')"/>
+                            </xsl:when>
+                            <xsl:when test="matches($manifestString, 'https?://mdz-nbn-resolving.de/urn:nbn:de:bvb:(\d+)-([a-z0-9]+)-([a-z0-9]+)')">
+                                <xsl:value-of select="replace($manifestString,'https?://mdz-nbn-resolving.de/urn:nbn:de:bvb:(\d+)-([a-z0-9]+)-([a-z0-9]+)','https://api.digitale-sammlungen.de/iiif/presentation/v2/$2/manifest')"/>
+                            </xsl:when>
+                            <xsl:when test="matches($manifestString, 'https?://www.mdz-nbn-resolving.de/urn/resolver.pl?urn:nbn:de:bvb:(\d+)-([a-z0-9]+)-([a-z0-9]+)')">
+                                <xsl:value-of select="replace($manifestString,'https?://www.mdz-nbn-resolving.de/urn/resolver.pl?urn:nbn:de:bvb:(\d+)-([a-z0-9]+)-([a-z0-9]+)','https://api.digitale-sammlungen.de/iiif/presentation/v2/$2/manifest')"/>
+                            </xsl:when>
+                            <xsl:when test="matches($manifestString, 'https://gallica.bnf.fr/(ark:/[A-Za-z0-9]+/[A-Za-z0-9]+)(.*)')">
+                                <xsl:value-of select="replace($manifestString,'https://gallica.bnf.fr/(ark:/[A-Za-z0-9]+/[A-Za-z0-9]+)(.*)','https://gallica.bnf.fr/iiif/$1/manifest.json')"/>
+                            </xsl:when>
+                            <xsl:otherwise><xsl:value-of select="$manifestString"/></xsl:otherwise>
                         </xsl:choose>
                     </xsl:variable>
                     <div>
