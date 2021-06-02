@@ -355,7 +355,7 @@
                         </p>
                     </xsl:if>
                 </div>
-                <xsl:if test="descendant::t:ref[@type='IIIF'] or descendant::t:ref[contains(@target, '//archive.org/details')]">
+
                     <!-- //archive.org/details/( -->
                     <xsl:variable name="manifestString">
                         <xsl:choose>
@@ -363,7 +363,7 @@
                                 <xsl:value-of select="descendant::t:ref[@type='IIIF'][1]/@target"/>
                             </xsl:when>
                             <xsl:otherwise>
-                                <xsl:value-of select="descendant::t:ref[contains(@target, '//archive.org/details')][1]/@target"/>
+                                <xsl:value-of select="descendant::t:monogr/t:ref[1]/@target"/>
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:variable>
@@ -384,20 +384,20 @@
                             <xsl:when test="matches($manifestString, 'https://gallica.bnf.fr/(ark:/[A-Za-z0-9]+/[A-Za-z0-9]+)(.*)')">
                                 <xsl:value-of select="replace($manifestString,'https://gallica.bnf.fr/(ark:/[A-Za-z0-9]+/[A-Za-z0-9]+)(.*)','https://gallica.bnf.fr/iiif/$1/manifest.json')"/>
                             </xsl:when>
-                            <xsl:otherwise><xsl:value-of select="$manifestString"/></xsl:otherwise>
                         </xsl:choose>
                     </xsl:variable>
-                    <div>
-                        <script src="https://unpkg.com/mirador@latest/dist/mirador.min.js"/>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="mirador" style="margin:1em; padding:1em; z-index: 1; min-height:600px; poisition: relative;">
-                                    <div id="mirador"/>
+                    <xsl:if test="$manifest != ''">
+                        <div>
+                            <script src="https://unpkg.com/mirador@latest/dist/mirador.min.js"/>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mirador" style="margin:1em; padding:1em; z-index: 1; min-height:600px; poisition: relative;">
+                                        <div id="mirador"/>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <script type="text/javascript"> 
-                            <![CDATA[
+                            <script type="text/javascript"> 
+                                <![CDATA[
                                 var mirador = Mirador.viewer({
                                 "id": "mirador",
                                 "manifests": {"]]><xsl:value-of select="$manifest"/><![CDATA[": {
@@ -432,9 +432,10 @@
                                   }
                                 }
                                 });]]>
-                        </script>
-                    </div>
-                </xsl:if>
+                            </script>
+                        </div> 
+                    </xsl:if>
+                    
                 <xsl:if test="descendant::t:idno[@type='URI'][not(matches(.,'^(https://doi.org/|https://biblia-arabica.com|https://www.zotero.org|https://api.zotero.org)'))] or descendant::t:ref/@target[not(matches(.,'^(https://biblia-arabica.com|https://www.zotero.org|https://api.zotero.org)'))]">
                     <h3>View at: </h3>
                     <div class="section indent">    
