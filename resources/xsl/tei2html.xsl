@@ -378,8 +378,8 @@
                             <xsl:when test="matches($manifestString, 'https?://mdz-nbn-resolving.de/urn:nbn:de:bvb:(\d+)-([a-z0-9]+)-([a-z0-9]+)')">
                                 <xsl:value-of select="replace($manifestString,'https?://mdz-nbn-resolving.de/urn:nbn:de:bvb:(\d+)-([a-z0-9]+)-([a-z0-9]+)','https://api.digitale-sammlungen.de/iiif/presentation/v2/$2/manifest')"/>
                             </xsl:when>
-                            <xsl:when test="matches($manifestString, 'https?://www.mdz-nbn-resolving.de/urn/resolver.pl?urn:nbn:de:bvb:(\d+)-([a-z0-9]+)-([a-z0-9]+)')">
-                                <xsl:value-of select="replace($manifestString,'https?://www.mdz-nbn-resolving.de/urn/resolver.pl?urn:nbn:de:bvb:(\d+)-([a-z0-9]+)-([a-z0-9]+)','https://api.digitale-sammlungen.de/iiif/presentation/v2/$2/manifest')"/>
+                            <xsl:when test="matches($manifestString, 'https?://(www.)?mdz-nbn-resolving.de/urn/resolver.pl\?urn=urn:nbn:de:bvb:(\d+)-([a-z0-9]+)-([a-z0-9]+)')">
+                                <xsl:value-of select="replace($manifestString,'https?://(www.)?mdz-nbn-resolving.de/urn/resolver.pl\?urn=urn:nbn:de:bvb:(\d+)-([a-z0-9]+)-([a-z0-9]+)','https://api.digitale-sammlungen.de/iiif/presentation/v2/$3/manifest')"/>
                             </xsl:when>
                             <xsl:when test="matches($manifestString, 'https://gallica.bnf.fr/(ark:/[A-Za-z0-9]+/[A-Za-z0-9]+)(.*)')">
                                 <xsl:value-of select="replace($manifestString,'https://gallica.bnf.fr/(ark:/[A-Za-z0-9]+/[A-Za-z0-9]+)(.*)','https://gallica.bnf.fr/iiif/$1/manifest.json')"/>
