@@ -11,7 +11,7 @@
     <finish>post-install.xql</finish>
     <config>
         <!-- App title -->
-        <title>A Bibliography of the Arabic Bible</title>
+        <title>Biblia Arabica bibliography</title>
         <!-- App description -->
         <description/>
         <!-- Contact email -->
@@ -22,7 +22,7 @@
         <!-- Web Site URL -->
         <url>https://biblia-arabica.com/</url>
         <!-- Root of app for building dynamic links. Default is eXist app root -->
-        <nav-base>/exist/apps/ba</nav-base>
+        <nav-base>/bibl</nav-base>
         <!-- eXist app root for app deployment-->
         <app-root>ba</app-root>
         <!-- eXist data app root for gazetteer data -->
@@ -47,11 +47,13 @@
             <option id="ms-Hebrew">Hebrew</option>
             <option id="qwerty">English QWERTY</option>
         </keyboard-options>
+        <!-- Zotero group -->
+        <zotero-group-api>https://api.zotero.org/groups/538215</zotero-group-api>
         <zotero group="538215"/>
-           <collections>
+        <collections>
             <!--<collection name="Short-name used in html pages to reference collection, module name" series="Series name used in TEI" app-root="folder name in app" data-root="folder name in data"/>-->
-               <collection name="bibl" title="A Bibliography of the Arabic Bible" app-root="/" data-root="/" record-URI-pattern="https://biblia-arabica.com/bibl/"/>
-          </collections>  
+            <collection name="bibl" title="A Bibliography of the Arabic Bible" app-root="/" data-root="/" record-URI-pattern="https://biblia-arabica.com/bibl/"/>
+        </collections>  
         <!--  
     <google_analytics>var _gaq=[['_setAccount',''],['_trackPageview']];
         (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
