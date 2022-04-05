@@ -1049,7 +1049,7 @@ body  .alpha-pages  { margin-top: 1em; }
     float:left;
     margin-left:3em;
     }
-.caret {float:left; margin-left:.5em; margin-top:.5em;}    
+.caret {float:left; margin-left:.5em; margin-top:.5em;}  
 
 /*record*/
 
@@ -1069,8 +1069,3 @@ body  .alpha-pages  { margin-top: 1em; }
 /* Mirador styles */
 .mirador {margin:1em; padding:1em; z-index: 1; min-height:600px; poisition: relative;}
 #mirador nav.mirador-workspace-control-panel {display:none;}
-
-
-
-
-
